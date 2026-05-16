@@ -1,2 +1,0 @@
-# Placeholder firmware content
-# Replace this file with real DCDC boot text image.

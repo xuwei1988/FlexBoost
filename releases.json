@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
-  "latest_version": 2,
+  "latest_version": 3,
   "generated_at": "2026-05-16T18:40:00+08:00",
   "releases": [
     {
-      "version": 2,
-      "version_name": "dcdc-1.0.2",
-      "file_name": "dcdc_boot_v1_0_2.txt",
+      "version": 3,
+      "version_name": "Flex900_20260516",
+      "file_name": "36V_Charge900W_20260516",
       "file_ext": ".txt",
-      "file_url": "firmware/dcdc_boot_v1_0_2.txt",
-      "size": 42,
+      "file_url": "firmware/36V_Charge900W_20260516.txt",
+      "size": 100786,
       "sha256": "",
-      "target": "dcdc_txt",
-      "notes": "Example DCDC text image placeholder. Replace with real payload."
+      "target": "FlexChar900",
+      "notes": "Example FlexChar text image placeholder. Replace with real payload."
     },
     {
       "version": 1,
