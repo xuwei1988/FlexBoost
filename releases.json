@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "latest_version": 2,
+  "generated_at": "2026-05-16T18:40:00+08:00",
+  "releases": [
+    {
+      "version": 2,
+      "version_name": "dcdc-1.0.2",
+      "file_name": "dcdc_boot_v1_0_2.txt",
+      "file_ext": ".txt",
+      "file_url": "firmware/dcdc_boot_v1_0_2.txt",
+      "size": 42,
+      "sha256": "",
+      "target": "dcdc_txt",
+      "notes": "Example DCDC text image placeholder. Replace with real payload."
+    },
+    {
+      "version": 1,
+      "version_name": "esp32s3-1.0.1",
+      "file_name": "esp32s3_boot_v1_0_1.bin",
+      "file_ext": ".bin",
+      "file_url": "firmware/esp32s3_boot_v1_0_1.bin",
+      "size": 8,
+      "sha256": "",
+      "target": "esp32_bin",
+      "notes": "Example ESP32-S3 binary placeholder. Replace with real payload."
+    }
+  ]
+}
