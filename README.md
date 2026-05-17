@@ -1,25 +1,33 @@
 # FlexBoost
 
-Static host for firmware files consumed by the FlexChar app.
+Firmware dashboard and API host consumed by the FlexChar app.
 
 ## Layout
 
-- `releases.json`: release metadata consumed by app Firmware Update page.
-- `firmware/`: uploaded firmware assets (`.txt` / `.bin`).
-- `index.html`: optional human-readable landing page.
+- `index.html`: dashboard UI (upload + active management + history).
+- `api/`: Vercel serverless API routes.
+- `releases.json`: legacy bootstrap source (optional fallback).
+- `firmware/`: locally tracked firmware sample files.
 
-## Release contract
+## Runtime API contract
 
-The app fetches `releases.json` and supports:
+- `GET /api/firmware`
+  - grouped lists (`bin_files`, `txt_files`)
+  - active pointers
+  - full `firmware_history`
+- `POST /api/upload`
+  - JSON payload: `fileName`, `contentBase64`, optional `versionName`, `notes`, `version`
+- `POST /api/set-active`
+  - JSON payload: `id`, `group` (`bin` / `txt`)
+- `GET /api/active`
+  - app-facing active firmware payload (`active_bin`, `active_txt`, `releases`)
 
-- `latest_version`: integer
-- `releases[]`: records with
-  - `version` (int)
-  - `version_name` (string)
-  - `file_name` (string)
-  - `file_ext` (string, e.g. `.txt` / `.bin`)
-  - `file_url` (string; relative URLs are allowed)
-  - `size` (int bytes)
-  - `sha256` (optional string)
-  - `target` (`dcdc_txt` or `esp32_bin`)
-  - `notes` (optional string)
+## Vercel setup
+
+Set these environment variables in Vercel project settings:
+
+- `BLOB_READ_WRITE_TOKEN`: required by `@vercel/blob`.
+
+Then deploy normally. The dashboard writes metadata into Blob path:
+
+- `metadata/firmware-state.json`

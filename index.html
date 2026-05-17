@@ -3,25 +3,530 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>FlexBoost Firmware Host</title>
+    <title>FlexBoost Firmware Dashboard</title>
     <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        margin: 2rem;
-        color: #222;
+      :root {
+        --bg: #f3f5fb;
+        --card: #ffffff;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --primary: #1f68d6;
+        --text: #131927;
+        --ok: #0f9d58;
       }
-      code {
-        background: #f4f4f4;
-        padding: 0.1rem 0.3rem;
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .shell {
+        max-width: 1180px;
+        margin: 24px auto;
+        padding: 0 16px;
+      }
+      .heading {
+        text-align: center;
+        margin: 20px 0 24px;
+      }
+      .heading h1 {
+        margin: 8px 0 0;
+        font-size: 46px;
+        letter-spacing: -0.02em;
+      }
+      .heading p {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+      .top-grid,
+      .list-grid {
+        display: grid;
+        gap: 16px;
+      }
+      .top-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .list-grid {
+        margin-top: 16px;
+        grid-template-columns: 1fr 1fr;
+      }
+      .history-grid {
+        margin-top: 16px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 20px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      }
+      .hero {
+        background: linear-gradient(130deg, #175bc4, #3d93ff);
+        color: #f8fbff;
+      }
+      .hero .tag {
+        font-size: 11px;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+      }
+      .hero h2 {
+        margin: 10px 0 4px;
+        font-size: 20px;
+        font-weight: 600;
+        opacity: 0.95;
+      }
+      .hero .version {
+        font-size: 52px;
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+      }
+      .hero .sub {
+        margin-top: 10px;
+        font-size: 13px;
+        opacity: 0.92;
+      }
+      .deploy-title {
+        font-size: 30px;
+        margin: 0;
+        letter-spacing: -0.01em;
+      }
+      .deploy-drop {
+        margin-top: 12px;
+        border: 2px dashed #b7c4e5;
+        border-radius: 18px;
+        min-height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+        color: #4b5563;
+        cursor: pointer;
+        transition: border-color 120ms ease, background 120ms ease;
+      }
+      .deploy-drop.dragover {
+        border-color: var(--primary);
+        background: #eff6ff;
+      }
+      .deploy-drop strong {
+        font-size: 18px;
+        color: #1f2937;
+      }
+      .deploy-hint {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .notes-row {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+      }
+      .notes-row input {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+      .btn {
+        border: 0;
+        border-radius: 10px;
+        padding: 10px 14px;
+        background: var(--primary);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn.secondary {
+        background: #eaf0ff;
+        color: #1c3f87;
+      }
+      .list-title {
+        margin: 0;
+        font-size: 24px;
+      }
+      .subtitle {
+        margin: 4px 0 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        text-align: left;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        color: #6b7280;
+        text-transform: uppercase;
+        padding: 0 0 8px;
+      }
+      td {
+        padding: 11px 0;
+        border-top: 1px solid #eef2f7;
+        vertical-align: top;
+      }
+      .name {
+        font-weight: 600;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .status {
+        display: inline-flex;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 10px;
+      }
+      .status.active {
+        background: #e7f8ef;
+        color: #0f8f53;
+      }
+      .status.archived {
+        background: #f2f4f8;
+        color: #6b7280;
+      }
+      .history-list {
+        max-height: 280px;
+        overflow: auto;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .history-item {
+        border-top: 1px solid #eef2f7;
+        padding: 10px 0;
+      }
+      .history-item:first-child {
+        border-top: 0;
+      }
+      .history-time {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .msg {
+        margin-top: 10px;
+        font-size: 13px;
+      }
+      .msg.ok {
+        color: var(--ok);
+      }
+      .msg.error {
+        color: #c53030;
+      }
+      @media (max-width: 960px) {
+        .top-grid,
+        .list-grid {
+          grid-template-columns: 1fr;
+        }
+        .heading h1 {
+          font-size: 36px;
+        }
+        .hero .version {
+          font-size: 38px;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>FlexBoost Firmware Host</h1>
-    <p>This static site is used by the app to fetch firmware metadata and files.</p>
-    <p>
-      Manifest URL:
-      <a href="./releases.json"><code>releases.json</code></a>
-    </p>
+    <main class="shell">
+      <header class="heading">
+        <p>Management Console</p>
+        <h1>Firmware Dashboard</h1>
+      </header>
+
+      <section class="top-grid">
+        <article class="card hero">
+          <div class="tag">Latest Active</div>
+          <h2>Production Fleet</h2>
+          <p id="heroVersion" class="version">--</p>
+          <div id="heroSub" class="sub">Waiting for active firmware data...</div>
+        </article>
+
+        <article class="card">
+          <h2 class="deploy-title">Deploy New</h2>
+          <p class="subtitle">Drop firmware files here to upload.</p>
+          <div id="dropZone" class="deploy-drop">
+            <strong>Choose .bin or .txt file</strong>
+            <span>or drag and drop here</span>
+          </div>
+          <div class="notes-row">
+            <input id="notesInput" type="text" placeholder="Optional release notes" />
+            <button id="refreshBtn" class="btn secondary" type="button">Refresh</button>
+          </div>
+          <input id="filePicker" type="file" accept=".bin,.txt" hidden />
+          <div id="uploadMsg" class="msg"></div>
+        </article>
+      </section>
+
+      <section class="list-grid">
+        <article class="card">
+          <h3 class="list-title">.bin Files</h3>
+          <p class="subtitle">Firmware version history.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="binTableBody"></tbody>
+          </table>
+        </article>
+        <article class="card">
+          <h3 class="list-title">.txt Files</h3>
+          <p class="subtitle">Configuration file history.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="txtTableBody"></tbody>
+          </table>
+        </article>
+      </section>
+
+      <section class="history-grid">
+        <article class="card">
+          <h3 class="list-title">Firmware History</h3>
+          <p class="subtitle">All uploads and active switches.</p>
+          <ul id="historyList" class="history-list"></ul>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const dropZone = document.getElementById("dropZone");
+      const filePicker = document.getElementById("filePicker");
+      const notesInput = document.getElementById("notesInput");
+      const refreshBtn = document.getElementById("refreshBtn");
+      const uploadMsg = document.getElementById("uploadMsg");
+      const heroVersion = document.getElementById("heroVersion");
+      const heroSub = document.getElementById("heroSub");
+      const binTableBody = document.getElementById("binTableBody");
+      const txtTableBody = document.getElementById("txtTableBody");
+      const historyList = document.getElementById("historyList");
+
+      function setMessage(type, text) {
+        uploadMsg.className = `msg ${type || ""}`.trim();
+        uploadMsg.textContent = text || "";
+      }
+
+      function ensureAllowedFile(file) {
+        const lower = file.name.toLowerCase();
+        return lower.endsWith(".bin") || lower.endsWith(".txt");
+      }
+
+      function toBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const result = String(reader.result || "");
+            const commaIdx = result.indexOf(",");
+            resolve(commaIdx >= 0 ? result.slice(commaIdx + 1) : result);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function formatTime(iso) {
+        if (!iso) return "--";
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) return iso;
+        return d.toLocaleString();
+      }
+
+      function nameWithoutExt(name) {
+        if (!name) return "--";
+        const idx = name.lastIndexOf(".");
+        return idx > 0 ? name.slice(0, idx) : name;
+      }
+
+      function renderFileRows(target, rows, group) {
+        target.innerHTML = "";
+        if (!rows.length) {
+          target.innerHTML = `<tr><td colspan="3" class="meta">No ${group} files yet.</td></tr>`;
+          return;
+        }
+        for (const row of rows) {
+          const tr = document.createElement("tr");
+          const active = row.status === "active";
+          tr.innerHTML = `
+            <td>
+              <div class="name">${row.version_name || `v${row.version}`}</div>
+              <div class="meta">${formatTime(row.uploaded_at)}</div>
+            </td>
+            <td><span class="status ${active ? "active" : "archived"}">${active ? "ACTIVE" : "ARCHIVED"}</span></td>
+            <td>
+              ${active ? `<span class="meta">Current</span>` : `<button class="btn secondary" data-id="${row.id}" data-group="${group}" type="button">Set Active</button>`}
+            </td>
+          `;
+          target.appendChild(tr);
+        }
+      }
+
+      function renderHistory(items) {
+        historyList.innerHTML = "";
+        if (!items || !items.length) {
+          historyList.innerHTML = `<li class="history-item meta">No history yet.</li>`;
+          return;
+        }
+        for (const item of items) {
+          const li = document.createElement("li");
+          li.className = "history-item";
+          li.innerHTML = `
+            <div class="name">${item.detail || item.event_type}</div>
+            <div class="history-time">${(item.group || "--").toUpperCase()} • ${formatTime(item.at)}</div>
+          `;
+          historyList.appendChild(li);
+        }
+      }
+
+      function pickHeroVersion(payload) {
+        const txt = payload?.active?.txt;
+        const bin = payload?.active?.bin;
+        if (txt) {
+          heroVersion.textContent = txt.version_name || `v${txt.version}`;
+          heroSub.textContent = `.txt active: ${nameWithoutExt(txt.file_name)}${bin ? ` | .bin active: ${nameWithoutExt(bin.file_name)}` : ""}`;
+          return;
+        }
+        if (bin) {
+          heroVersion.textContent = bin.version_name || `v${bin.version}`;
+          heroSub.textContent = `.bin active: ${nameWithoutExt(bin.file_name)}`;
+          return;
+        }
+        heroVersion.textContent = "--";
+        heroSub.textContent = "No active firmware selected yet.";
+      }
+
+      async function loadDashboard() {
+        const resp = await fetch("/api/firmware", { cache: "no-store" });
+        if (!resp.ok) {
+          throw new Error(`Load failed with HTTP ${resp.status}`);
+        }
+        const payload = await resp.json();
+        pickHeroVersion(payload);
+        renderFileRows(binTableBody, payload.bin_files || [], "bin");
+        renderFileRows(txtTableBody, payload.txt_files || [], "txt");
+        renderHistory(payload.firmware_history || []);
+      }
+
+      async function setActive(id, group) {
+        const resp = await fetch("/api/set-active", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, group })
+        });
+        const payload = await resp.json();
+        if (!resp.ok) {
+          throw new Error(payload?.detail || payload?.error || "Set active failed.");
+        }
+        setMessage("ok", "Active firmware updated.");
+        await loadDashboard();
+      }
+
+      async function uploadFirmware(file) {
+        if (!ensureAllowedFile(file)) {
+          throw new Error("Only .bin and .txt files are supported.");
+        }
+        const contentBase64 = await toBase64(file);
+        const resp = await fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fileName: file.name,
+            notes: notesInput.value.trim(),
+            contentBase64
+          })
+        });
+        const payload = await resp.json();
+        if (!resp.ok) {
+          throw new Error(payload?.detail || payload?.error || "Upload failed.");
+        }
+        setMessage("ok", `${file.name} uploaded successfully.`);
+        await loadDashboard();
+      }
+
+      dropZone.addEventListener("click", () => filePicker.click());
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("dragover");
+      });
+      dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+      dropZone.addEventListener("drop", async (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("dragover");
+        const file = e.dataTransfer?.files?.[0];
+        if (!file) return;
+        try {
+          setMessage("", "Uploading...");
+          await uploadFirmware(file);
+        } catch (error) {
+          setMessage("error", String(error));
+        }
+      });
+
+      filePicker.addEventListener("change", async () => {
+        const file = filePicker.files?.[0];
+        if (!file) return;
+        try {
+          setMessage("", "Uploading...");
+          await uploadFirmware(file);
+        } catch (error) {
+          setMessage("error", String(error));
+        } finally {
+          filePicker.value = "";
+        }
+      });
+
+      refreshBtn.addEventListener("click", async () => {
+        try {
+          setMessage("", "Refreshing...");
+          await loadDashboard();
+          setMessage("ok", "Dashboard refreshed.");
+        } catch (error) {
+          setMessage("error", String(error));
+        }
+      });
+
+      document.addEventListener("click", async (event) => {
+        const btn = event.target.closest("button[data-id][data-group]");
+        if (!btn) return;
+        try {
+          setMessage("", "Updating active firmware...");
+          await setActive(btn.dataset.id, btn.dataset.group);
+        } catch (error) {
+          setMessage("error", String(error));
+        }
+      });
+
+      (async () => {
+        try {
+          setMessage("", "Loading dashboard...");
+          await loadDashboard();
+          setMessage("ok", "Ready.");
+        } catch (error) {
+          setMessage("error", String(error));
+        }
+      })();
+    </script>
   </body>
 </html>
