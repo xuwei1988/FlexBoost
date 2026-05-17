@@ -19,6 +19,8 @@ Firmware dashboard and API host consumed by the FlexChar app.
   - JSON payload: `fileName`, `contentBase64`, optional `versionName`, `notes`, `version`
 - `POST /api/set-active`
   - JSON payload: `id`, `group` (`bin` / `txt`)
+- `POST /api/delete`
+  - JSON payload: `id` — removes the record, deletes the Blob object when `file_url` is an `https://` URL, reconciles active in that group (promotes newest remaining or clears)
 - `GET /api/active`
   - app-facing active firmware payload (`active_bin`, `active_txt`, `releases`)
 

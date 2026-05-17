@@ -147,9 +147,18 @@
         font-weight: 600;
         cursor: pointer;
       }
-      .btn.secondary {
-        background: #eaf0ff;
-        color: #1c3f87;
+      .btn.danger {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+      }
+      .action-btns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+        max-width: 220px;
       }
       .list-title {
         margin: 0;
@@ -369,6 +378,9 @@
         for (const row of rows) {
           const tr = document.createElement("tr");
           const active = row.status === "active";
+          const activeSlot = active
+            ? `<span class="meta">Current</span>`
+            : `<button class="btn secondary" data-action="set-active" data-id="${row.id}" data-group="${group}" type="button">Set Active</button>`;
           tr.innerHTML = `
             <td>
               <div class="name">${row.version_name || `v${row.version}`}</div>
@@ -376,7 +388,10 @@
             </td>
             <td><span class="status ${active ? "active" : "archived"}">${active ? "ACTIVE" : "ARCHIVED"}</span></td>
             <td>
-              ${active ? `<span class="meta">Current</span>` : `<button class="btn secondary" data-id="${row.id}" data-group="${group}" type="button">Set Active</button>`}
+              <div class="action-btns">
+                ${activeSlot}
+                <button class="btn danger" data-action="delete" data-id="${row.id}" data-group="${group}" type="button">Delete</button>
+              </div>
             </td>
           `;
           target.appendChild(tr);
@@ -427,6 +442,23 @@
         renderFileRows(binTableBody, payload.bin_files || [], "bin");
         renderFileRows(txtTableBody, payload.txt_files || [], "txt");
         renderHistory(payload.firmware_history || []);
+      }
+
+      async function deleteFirmware(id) {
+        const resp = await fetch("/api/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id })
+        });
+        const payload = await resp.json();
+        if (!resp.ok) {
+          throw new Error(payload?.detail || payload?.error || "Delete failed.");
+        }
+        setMessage("ok", "Firmware deleted.");
+        pickHeroVersion(payload.payload);
+        renderFileRows(binTableBody, payload.payload.bin_files || [], "bin");
+        renderFileRows(txtTableBody, payload.payload.txt_files || [], "txt");
+        renderHistory(payload.payload.firmware_history || []);
       }
 
       async function setActive(id, group) {
@@ -508,13 +540,32 @@
       });
 
       document.addEventListener("click", async (event) => {
-        const btn = event.target.closest("button[data-id][data-group]");
+        const btn = event.target.closest("button[data-id][data-group][data-action]");
         if (!btn) return;
-        try {
-          setMessage("", "Updating active firmware...");
-          await setActive(btn.dataset.id, btn.dataset.group);
-        } catch (error) {
-          setMessage("error", String(error));
+        const { action, id, group } = btn.dataset;
+        if (action === "delete") {
+          if (
+            !confirm(
+              "Delete this firmware from storage? This cannot be undone."
+            )
+          ) {
+            return;
+          }
+          try {
+            setMessage("", "Deleting...");
+            await deleteFirmware(id);
+          } catch (error) {
+            setMessage("error", String(error));
+          }
+          return;
+        }
+        if (action === "set-active") {
+          try {
+            setMessage("", "Updating active firmware...");
+            await setActive(id, group);
+          } catch (error) {
+            setMessage("error", String(error));
+          }
         }
       });
 

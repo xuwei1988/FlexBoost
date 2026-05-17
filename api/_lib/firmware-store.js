@@ -1,7 +1,7 @@
 const { createHash, randomUUID } = require("crypto");
 const fs = require("fs/promises");
 const path = require("path");
-const { list, put } = require("@vercel/blob");
+const { del, list, put } = require("@vercel/blob");
 
 const STATE_SCHEMA_VERSION = 1;
 const STATE_BLOB_PATH = "metadata/firmware-state.json";
@@ -232,6 +232,65 @@ async function saveState(state) {
   return state;
 }
 
+async function deleteBlobByUrl(fileUrl) {
+  if (!fileUrl || typeof fileUrl !== "string") return;
+  const trimmed = fileUrl.trim();
+  if (!trimmed.startsWith("http")) return;
+  try {
+    await del(trimmed);
+  } catch (e) {
+    console.error("[firmware-store] Blob delete failed:", e?.message || e);
+  }
+}
+
+function reconcileGroupActiveAfterChange(state, group) {
+  const activeKey = group === GROUP_BIN ? "active_bin_id" : "active_txt_id";
+  const currentId = state[activeKey];
+  const stillExists =
+    currentId && state.records.some((r) => r.id === currentId);
+  if (stillExists) return;
+
+  const candidates = sortedByUploadedDesc(
+    state.records.filter((r) => r.group === group)
+  );
+  if (!candidates.length) {
+    state[activeKey] = null;
+    return;
+  }
+  applyActiveSelection(
+    state,
+    group,
+    candidates[0].id,
+    "Promoted newest remaining after delete."
+  );
+}
+
+async function deleteFirmwareRecord(state, id) {
+  const normalizedId = String(id || "").trim();
+  if (!normalizedId) {
+    throw new Error("id is required.");
+  }
+  const idx = state.records.findIndex((r) => r.id === normalizedId);
+  if (idx < 0) {
+    throw new Error("Record not found.");
+  }
+  const record = state.records[idx];
+  const group = record.group;
+  const label = record.file_name || normalizedId;
+
+  await deleteBlobByUrl(record.file_url);
+
+  state.records.splice(idx, 1);
+  state.firmware_history.unshift(
+    buildHistoryEvent("delete", group, normalizedId, `Deleted ${label}.`)
+  );
+
+  reconcileGroupActiveAfterChange(state, group);
+
+  state.updated_at = nowIso();
+  return { deletedId: normalizedId, group };
+}
+
 async function uploadFirmware({
   state,
   fileName,
@@ -334,6 +393,7 @@ module.exports = {
   GROUP_BIN,
   GROUP_TXT,
   applyActiveSelection,
+  deleteFirmwareRecord,
   getActiveManifest,
   getGroupedView,
   inferGroupFromName,
