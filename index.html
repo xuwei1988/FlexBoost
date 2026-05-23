@@ -236,6 +236,21 @@
       .msg.error {
         color: #c53030;
       }
+      .site-footer {
+        margin-top: 24px;
+        padding: 16px 0 8px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .site-footer a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .site-footer a:hover {
+        text-decoration: underline;
+      }
       @media (max-width: 960px) {
         .top-grid,
         .list-grid {
@@ -319,6 +334,10 @@
           <ul id="historyList" class="history-list"></ul>
         </article>
       </section>
+
+      <footer class="site-footer">
+        <a href="privacy.html">Privacy Policy</a>
+      </footer>
     </main>
 
     <script>

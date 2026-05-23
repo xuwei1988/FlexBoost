@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flexchar Privacy Policy</title>
+    <style>
+      :root {
+        --text: #131927;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --link: #1f68d6;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background: #fff;
+        line-height: 1.6;
+      }
+      .wrap {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 32px 20px 48px;
+      }
+      h1 {
+        font-size: 1.75rem;
+        margin: 0 0 8px;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 32px;
+      }
+      h2 {
+        font-size: 1.15rem;
+        margin: 28px 0 10px;
+        padding-top: 8px;
+        border-top: 1px solid var(--line);
+      }
+      h2:first-of-type {
+        border-top: 0;
+        padding-top: 0;
+      }
+      h3 {
+        font-size: 1rem;
+        margin: 18px 0 8px;
+      }
+      p,
+      li {
+        font-size: 0.95rem;
+      }
+      ul {
+        padding-left: 1.25rem;
+      }
+      a {
+        color: var(--link);
+      }
+      .lang-divider {
+        margin: 48px 0 32px;
+        border: 0;
+        border-top: 2px solid var(--line);
+      }
+      .back {
+        display: inline-block;
+        margin-bottom: 24px;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <a class="back" href="index.html">← FlexBoost Dashboard</a>
+
+      <h1>Flexchar Privacy Policy</h1>
+      <p class="meta">
+        FlexChar Technology Ltd.<br />
+        Effective date: 23 May 2026<br />
+        Contact:
+        <a href="mailto:support@vertech-pro.com">support@vertech-pro.com</a><br />
+        Address: Dongguan, Guangdong Province, China
+      </p>
+
+      <h2>1. Overview</h2>
+      <p>
+        Flexchar (“the App”) is a companion application that connects to FlexChar /
+        ESP32-S3 charging devices over Bluetooth Low Energy (BLE). It is used for
+        device discovery and connection, live status, history, parameter
+        configuration, and firmware updates.
+      </p>
+      <p>
+        The App does not require user registration or login. We do not sell your
+        personal information.
+      </p>
+
+      <h2>2. Information We Process</h2>
+      <h3>2.1 Information you provide or initiate</h3>
+      <ul>
+        <li>
+          Firmware files (for example <code>.bin</code> or <code>.txt</code>) that
+          you choose from your device for updates.
+        </li>
+        <li>
+          History or log exports you share through the system share sheet (you
+          choose the destination app).
+        </li>
+      </ul>
+
+      <h3>2.2 Information from connected devices (via BLE)</h3>
+      <ul>
+        <li>Bluetooth device identifiers, advertised names, and signal strength.</li>
+        <li>
+          Device serial numbers, firmware versions, operating status, and
+          charging / CAN-related telemetry.
+        </li>
+        <li>Charging history, session records, and decoded signal data synced from the device.</li>
+      </ul>
+
+      <h3>2.3 Information stored locally on your iPhone</h3>
+      <ul>
+        <li>Recently connected device information for offline display.</li>
+        <li>History records, CAN frames, UI presets, and related app data in local storage.</li>
+      </ul>
+      <p>
+        This data stays on your device unless you explicitly share or export it.
+        We do not automatically upload charging or history data to our business
+        servers.
+      </p>
+
+      <h3>2.4 Network communication</h3>
+      <p>
+        The App connects to
+        <a href="https://flex-boost.vercel.app">https://flex-boost.vercel.app</a>
+        to check firmware versions and download update packages. Requests may
+        include app/version metadata and firmware manifest or file metadata (version
+        numbers, file names, checksums). We do not transmit your name, phone
+        number, Apple ID, or precise location through this service.
+      </p>
+
+      <h3>2.5 Information we do not collect</h3>
+      <ul>
+        <li>Precise location (the App does not request location permission).</li>
+        <li>Contacts, calendar, microphone, or camera (unless stated in a future update).</li>
+        <li>Advertising identifiers or cross-app tracking data.</li>
+        <li>Account credentials (no sign-in is required).</li>
+      </ul>
+
+      <h2>3. How We Use Information</h2>
+      <ul>
+        <li>Discover, connect to, and communicate with your charging equipment.</li>
+        <li>Display live status, history, and diagnostic information.</li>
+        <li>Store records locally so you can review them offline.</li>
+        <li>Check for and download firmware updates.</li>
+        <li>Export or share data when you choose to do so.</li>
+      </ul>
+
+      <h2>4. Storage and Retention</h2>
+      <p>
+        App data is stored on your device until you delete the App or clear its
+        data. We do not operate a cloud account database tied to your charging
+        records in the current version of the App.
+      </p>
+
+      <h2>5. Third-Party Services</h2>
+      <ul>
+        <li>
+          <strong>Apple iOS / TestFlight</strong> — app distribution and system
+          permission prompts; governed by Apple’s policies.
+        </li>
+        <li>
+          <strong>FlexBoost firmware service</strong> (<code>flex-boost.vercel.app</code>,
+          hosted on Vercel) — firmware manifests and file downloads. Vercel Blob
+          stores firmware files and version metadata. Standard hosting access logs
+          may be retained by the platform.
+        </li>
+        <li>
+          Open-source components (Bluetooth, file picking, sharing libraries) run
+          on your device as part of the App.
+        </li>
+      </ul>
+      <p>
+        The FlexBoost management dashboard on this site is intended for internal
+        firmware administration and is not offered as a public consumer service.
+      </p>
+
+      <h2>6. Permissions (aligned with iOS prompts)</h2>
+      <ul>
+        <li>
+          <strong>Bluetooth</strong> — scan for, connect to, and sync data with your
+          device; background Bluetooth may be used during firmware updates.
+        </li>
+        <li>
+          <strong>Photos / files</strong> — only when you choose a firmware or related
+          file from your library.
+        </li>
+      </ul>
+
+      <h2>7. Your Choices</h2>
+      <ul>
+        <li>Manage Bluetooth and related permissions in iOS Settings → Privacy &amp; Security.</li>
+        <li>Remove local App data by uninstalling the App.</li>
+        <li>
+          Contact us at
+          <a href="mailto:support@vertech-pro.com">support@vertech-pro.com</a>
+          for privacy questions.
+        </li>
+      </ul>
+
+      <h2>8. Children</h2>
+      <p>
+        The App is not directed at children under 13, and we do not knowingly
+        collect personal information from children under 13.
+      </p>
+
+      <h2>9. Changes</h2>
+      <p>
+        We may update this policy from time to time. We will revise the effective
+        date on this page. Material changes may also be communicated in the App
+        when appropriate.
+      </p>
+
+      <h2>10. Contact</h2>
+      <p>
+        FlexChar Technology Ltd.<br />
+        Email:
+        <a href="mailto:support@vertech-pro.com">support@vertech-pro.com</a><br />
+        Address: Dongguan, Guangdong Province, China
+      </p>
+
+      <hr class="lang-divider" />
+
+      <h1>Flexchar 隐私政策</h1>
+      <p class="meta">
+        FlexChar Technology Ltd.<br />
+        生效日期：2026 年 5 月 23 日<br />
+        联系邮箱：
+        <a href="mailto:support@vertech-pro.com">support@vertech-pro.com</a><br />
+        地址：中国广东省东莞市
+      </p>
+
+      <h2>1. 概述</h2>
+      <p>
+        Flexchar（「本 App」）是一款通过低功耗蓝牙（BLE）连接 FlexChar / ESP32-S3
+        充电设备的配套应用，用于设备发现与连接、实时状态查看、历史记录、参数配置及固件升级。
+      </p>
+      <p>本 App 不要求用户注册或登录。我们不会出售您的个人信息。</p>
+
+      <h2>2. 我们处理的信息</h2>
+      <h3>2.1 您主动提供或发起的操作</h3>
+      <ul>
+        <li>您从本机选择的固件文件（如 <code>.bin</code>、<code>.txt</code>），用于设备升级。</li>
+        <li>您通过系统分享功能导出的历史或日志（分享目标由您选择）。</li>
+      </ul>
+
+      <h3>2.2 通过蓝牙从设备获得的信息</h3>
+      <ul>
+        <li>蓝牙设备标识符、广播名称、信号强度。</li>
+        <li>设备序列号、固件版本、运行状态及充电 / CAN 相关 telemetry。</li>
+        <li>从设备同步的充电历史、会话记录及解码后的信号数据。</li>
+      </ul>
+
+      <h3>2.3 存储在您 iPhone 本地的信息</h3>
+      <ul>
+        <li>最近连接的设备信息（便于离线显示）。</li>
+        <li>历史记录、CAN 帧、UI 预设等本地数据库中的 App 数据。</li>
+      </ul>
+      <p>
+        上述数据保存在您的设备上，除非您主动分享或导出。我们不会自动将充电或历史数据上传至业务服务器。
+      </p>
+
+      <h3>2.4 网络通信</h3>
+      <p>
+        本 App 会连接
+        <a href="https://flex-boost.vercel.app">https://flex-boost.vercel.app</a>
+        以检查固件版本并下载更新包。请求可能包含 App/版本元数据及固件 manifest
+        或文件元数据（版本号、文件名、校验值等）。我们不会通过该服务传输您的姓名、电话、Apple
+        ID 或精确地理位置。
+      </p>
+
+      <h3>2.5 我们不会收集的信息</h3>
+      <ul>
+        <li>精确地理位置（本 App 不请求定位权限）。</li>
+        <li>通讯录、日历、麦克风、相机（除非未来版本另行说明）。</li>
+        <li>广告标识符或跨 App 追踪数据。</li>
+        <li>账号凭证（无需登录）。</li>
+      </ul>
+
+      <h2>3. 我们如何使用信息</h2>
+      <ul>
+        <li>发现、连接并与您的充电设备通信。</li>
+        <li>显示实时状态、历史与诊断信息。</li>
+        <li>在本地保存记录，供您离线查看。</li>
+        <li>检查并下载固件更新。</li>
+        <li>在您主动操作时导出或分享数据。</li>
+      </ul>
+
+      <h2>4. 存储与保留</h2>
+      <p>
+        App 数据保存在您的设备上，直至您卸载 App 或清除其数据。当前版本 App
+        不运营与用户充电记录绑定的云端账户数据库。
+      </p>
+
+      <h2>5. 第三方服务</h2>
+      <ul>
+        <li>
+          <strong>Apple iOS / TestFlight</strong> — 应用分发与系统权限管理，受 Apple 政策约束。
+        </li>
+        <li>
+          <strong>FlexBoost 固件服务</strong>（<code>flex-boost.vercel.app</code>，托管于
+          Vercel）— 固件 manifest 与文件下载。Vercel Blob 存储固件文件及版本元数据。托管平台可能保留标准访问日志。
+        </li>
+        <li>开源组件（蓝牙、文件选择、分享库）作为 App 的一部分在您的设备上运行。</li>
+      </ul>
+      <p>本站的 FlexBoost 管理面板主要用于内部固件管理，不对公众提供消费级服务。</p>
+
+      <h2>6. 权限说明（与 iOS 系统弹窗一致）</h2>
+      <ul>
+        <li><strong>蓝牙</strong> — 扫描、连接设备并同步数据；固件升级期间可能使用后台蓝牙。</li>
+        <li><strong>相册 / 文件</strong> — 仅在您主动选择固件或相关文件时使用。</li>
+      </ul>
+
+      <h2>7. 您的选择</h2>
+      <ul>
+        <li>可在 iOS「设置 → 隐私与安全性」中管理蓝牙等权限。</li>
+        <li>卸载 App 可删除本地数据。</li>
+        <li>
+          如有隐私相关问题，请联系
+          <a href="mailto:support@vertech-pro.com">support@vertech-pro.com</a>。
+        </li>
+      </ul>
+
+      <h2>8. 儿童隐私</h2>
+      <p>本 App 不面向 13 周岁以下儿童，也不会故意收集该年龄段儿童的个人信息。</p>
+
+      <h2>9. 政策变更</h2>
+      <p>
+        我们可能不时更新本政策，并在此页修订生效日期。重大变更时，也可能在 App 内适当提示。
+      </p>
+
+      <h2>10. 联系我们</h2>
+      <p>
+        FlexChar Technology Ltd.<br />
+        邮箱：<a href="mailto:support@vertech-pro.com">support@vertech-pro.com</a><br />
+        地址：中国广东省东莞市
+      </p>
+    </div>
+  </body>
+</html>

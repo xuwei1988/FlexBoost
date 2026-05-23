@@ -5,6 +5,7 @@ Firmware dashboard and API host consumed by the FlexChar app.
 ## Layout
 
 - `index.html`: dashboard UI (upload + active management + history).
+- `privacy.html`: Flexchar App privacy policy (EN + ZH). App Store URL: `https://flex-boost.vercel.app/privacy.html`.
 - `api/`: Vercel serverless API routes.
 - `releases.json`: legacy bootstrap source (optional fallback).
 - `firmware/`: locally tracked firmware sample files.
