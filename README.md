@@ -34,6 +34,8 @@ Firmware dashboard and API host consumed by the FlexChar app.
 
 Dashboard routes (`/api/firmware`, `/api/upload`, `/api/set-active`, `/api/delete`) require a valid session cookie. `GET /api/active` stays public for the FlexChar app.
 
+`middleware.js` redirects unauthenticated requests for `/` and `/index.html` to `login.html` before the static dashboard page is served.
+
 ## Vercel setup
 
 Set these environment variables in Vercel project settings:
