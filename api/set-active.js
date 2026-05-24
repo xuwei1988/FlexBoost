@@ -1,4 +1,8 @@
 const {
+  requireDashboardAuth,
+  sendAuthFailure
+} = require("./_lib/dashboard-auth");
+const {
   applyActiveSelection,
   getGroupedView,
   inferGroupFromName,
@@ -19,6 +23,9 @@ module.exports = async function handler(req, res) {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed." });
   }
+
+  const auth = requireDashboardAuth(req, res);
+  if (!auth.ok) return sendAuthFailure(res, auth);
 
   try {
     const body = parseJsonBody(req);

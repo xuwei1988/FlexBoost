@@ -1,3 +1,7 @@
+const {
+  requireDashboardAuth,
+  sendAuthFailure
+} = require("./_lib/dashboard-auth");
 const { getGroupedView, loadState } = require("./_lib/firmware-store");
 
 module.exports = async function handler(req, res) {
@@ -5,6 +9,9 @@ module.exports = async function handler(req, res) {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Method not allowed." });
   }
+
+  const auth = requireDashboardAuth(req, res);
+  if (!auth.ok) return sendAuthFailure(res, auth);
 
   try {
     const state = await loadState();

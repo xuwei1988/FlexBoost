@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FlexBoost Sign In</title>
+    <style>
+      :root {
+        --bg: #f3f5fb;
+        --card: #ffffff;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --primary: #1f68d6;
+        --text: #131927;
+        --error: #b42318;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .card {
+        width: 100%;
+        max-width: 420px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 32px 28px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      }
+      .eyebrow {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        font-size: 12px;
+        text-align: center;
+      }
+      h1 {
+        margin: 8px 0 8px;
+        font-size: 32px;
+        letter-spacing: -0.02em;
+        text-align: center;
+      }
+      .subtitle {
+        margin: 0 0 24px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 14px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      input[type="password"] {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 15px;
+        font-family: inherit;
+      }
+      input[type="password"]:focus {
+        outline: 2px solid rgba(31, 104, 214, 0.25);
+        border-color: var(--primary);
+      }
+      .btn {
+        width: 100%;
+        margin-top: 16px;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+      .msg {
+        min-height: 20px;
+        margin-top: 14px;
+        font-size: 13px;
+        text-align: center;
+      }
+      .msg.error {
+        color: var(--error);
+      }
+      .footer {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        text-align: center;
+        font-size: 13px;
+      }
+      .footer a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <p class="eyebrow">Management Console</p>
+      <h1>Sign In</h1>
+      <p class="subtitle">Enter the dashboard password to continue.</p>
+
+      <form id="loginForm">
+        <label for="passwordInput">Password</label>
+        <input
+          id="passwordInput"
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          required
+        />
+        <button id="submitBtn" class="btn" type="submit">Sign in</button>
+      </form>
+
+      <div id="loginMsg" class="msg"></div>
+
+      <footer class="footer">
+        <a href="privacy.html">Privacy Policy</a>
+      </footer>
+    </main>
+
+    <script>
+      const loginForm = document.getElementById("loginForm");
+      const passwordInput = document.getElementById("passwordInput");
+      const submitBtn = document.getElementById("submitBtn");
+      const loginMsg = document.getElementById("loginMsg");
+
+      function setMessage(type, text) {
+        loginMsg.className = `msg ${type || ""}`.trim();
+        loginMsg.textContent = text || "";
+      }
+
+      async function checkExistingSession() {
+        const resp = await fetch("/api/session", {
+          credentials: "same-origin",
+          cache: "no-store"
+        });
+        if (!resp.ok) return;
+        const payload = await resp.json();
+        if (payload.authenticated) {
+          window.location.href = "index.html";
+        }
+      }
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        setMessage("", "");
+        submitBtn.disabled = true;
+
+        try {
+          const resp = await fetch("/api/login", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password: passwordInput.value })
+          });
+          const payload = await resp.json();
+          if (!resp.ok) {
+            throw new Error(payload?.error || payload?.detail || "Sign in failed.");
+          }
+          window.location.href = "index.html";
+        } catch (error) {
+          setMessage("error", String(error.message || error));
+          passwordInput.select();
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
+      checkExistingSession();
+    </script>
+  </body>
+</html>

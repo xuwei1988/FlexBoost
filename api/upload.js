@@ -1,3 +1,7 @@
+const {
+  requireDashboardAuth,
+  sendAuthFailure
+} = require("./_lib/dashboard-auth");
 const { loadState, saveState, uploadFirmware } = require("./_lib/firmware-store");
 
 function parseJsonBody(req) {
@@ -20,6 +24,9 @@ async function handler(req, res) {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed." });
   }
+
+  const auth = requireDashboardAuth(req, res);
+  if (!auth.ok) return sendAuthFailure(res, auth);
 
   try {
     const body = parseJsonBody(req);
